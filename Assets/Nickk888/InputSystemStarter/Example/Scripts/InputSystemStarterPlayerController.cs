@@ -1,0 +1,102 @@
+using UnityEngine;
+
+public class InputSystemStarterPlayerController : MonoBehaviour
+{
+    [SerializeField] private Transform cameraTransform;
+    [SerializeField] private float cameraSensitivity = 2f;
+    [SerializeField] private float moveSensitivity = 5f;
+    [SerializeField] private float cameraClamp = 90f;
+    [SerializeField] private float jumpForce = 5f;
+
+    [SerializeField] private Transform grabPointTransform;
+    [SerializeField] private Vector3 aimPosition;
+
+    [SerializeField] private WeaponShoot weaponShoot;
+
+    private Vector3 grabPointTransformUnaimed;
+    private CharacterController cc;
+    private float currentYRotation;
+    private float currentXRotation;
+    private Vector3 moveVelocity;
+
+    private void Awake() 
+    {
+        cc = GetComponent<CharacterController>();
+        grabPointTransformUnaimed = grabPointTransform.localPosition;
+    }
+
+    private void Start() 
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;    
+    }
+
+    private void Update()
+    {
+        Vector2 lookInputValue = PlayerInput.Instance.GetLookInput();
+        Vector2 moveInputValue = PlayerInput.Instance.GetMoveInput();
+
+        bool jumpValue = PlayerInput.Instance.GetJumpAction().IsPressed();
+        bool crouchValue = PlayerInput.Instance.GetCrouchAction().WasPressedThisFrame();
+        bool sprintValue = PlayerInput.Instance.GetSprintAction().IsPressed();
+        bool aimingValue = PlayerInput.Instance.GetAimAction().IsPressed();
+        bool fireValue = PlayerInput.Instance.GetFireAction().IsPressed();
+
+        HandleWeapon(aimingValue, fireValue);
+        HandleLook(lookInputValue);
+        HandleMove(moveInputValue);
+        HandleJump(jumpValue);
+    }
+
+    private void HandleWeapon(bool aimingValue, bool fireValue)
+    {
+        weaponShoot.SetShooting(fireValue);
+        if (aimingValue)
+        {
+            grabPointTransform.localPosition = aimPosition;
+        }
+        else
+        {
+            grabPointTransform.localPosition = grabPointTransformUnaimed;
+        }
+    }
+
+    private void HandleMove(Vector2 moveInputValue)
+    {
+        // Gravity
+        if(cc.isGrounded)
+        {
+            moveVelocity.y = -1.75f;
+        }
+        else
+        {
+            moveVelocity.y += Physics.gravity.y * Time.deltaTime;
+        }
+
+        //Movement
+        Vector3 movement = transform.forward * moveInputValue.y + transform.right * moveInputValue.x;
+        moveVelocity.x = movement.x;
+        moveVelocity.z = movement.z;
+        cc.Move(moveVelocity * moveSensitivity * Time.deltaTime);
+    }
+
+    private void HandleJump(bool jumping)
+    {
+        if(jumping && cc.isGrounded)
+        {
+            moveVelocity.y = jumpForce;
+            cc.Move(moveVelocity * moveSensitivity * Time.deltaTime);
+            Debug.Log(jumping);
+        }
+    }
+
+    private void HandleLook(Vector2 lookInputValue)
+    {
+        currentYRotation += lookInputValue.x * cameraSensitivity * 0.1f;
+        currentXRotation -= lookInputValue.y * cameraSensitivity * 0.1f;
+        currentXRotation = Mathf.Clamp(currentXRotation, -cameraClamp, 90);
+
+        cameraTransform.localEulerAngles = new Vector3(currentXRotation, 0, 0);
+        transform.eulerAngles = new Vector3(0, currentYRotation, 0);
+    }
+}
