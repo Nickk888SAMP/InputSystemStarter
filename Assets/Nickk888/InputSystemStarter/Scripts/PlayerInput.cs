@@ -148,14 +148,18 @@ public class PlayerInput : MonoBehaviour
     /// Loads the binding from the PlayerPrefs.
     /// </summary>
     /// <param name="keyName">The PlayerPrefs key name to get the binding from.</param>
-    public void LoadBindingFromPlayerPrefs(string keyName)
+    /// <returns></returns>
+    public bool LoadBindingFromPlayerPrefs(string keyName)
     {
         inputActions.Disable();
         if(PlayerPrefs.HasKey(keyName))
         {
             inputActions.LoadBindingOverridesFromJson(PlayerPrefs.GetString(keyName));
+            inputActions.Enable();
+            return true;
         }
         inputActions.Enable();
+        return false;
     }
 
     /// <summary>
