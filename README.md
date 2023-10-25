@@ -8,6 +8,8 @@ This asset simplifies input handling in your Unity projects. Leveraging the powe
 * Support for **Keyboard and Mouse**, **XBox Controller**, **PlayStation Controller** and **Switch Pro Controller**.
 * A public method to check if player is using a Gamepad.
 * A public method to get the Device type.
+* Dynamic key rebinding, executing all necessary events to use for your UI.
+* Methods to save and load the Bindings.
 
 # Limitations
 Because it's a singleton and so it's a single instance, getting values for a local multiplayer game is not possible with the script.
@@ -17,6 +19,10 @@ Because it's a singleton and so it's a single instance, getting values for a loc
 public DeviceType GetCurrentDeviceType();
 public bool IsGamepadInUse()
 public DeviceType GetDeviceType(string controlSchemeName)
+public bool LoadBindingFromPlayerPrefs(string keyName)
+public void SafeBindingToPlayerPrefs(string keyName)
+public void RebindBinding(InputAction inputActionToRebind, int bindIndex)
+public string GetBindingText(InputAction inputAction, int index)
 ```
 # Preconfigured Input Actions Methods
 ```csharp
@@ -33,9 +39,12 @@ public InputAction GetInteractAlternativeAction()
 
 # Events
 ```csharp
-OnDeviceChanged;
-OnDeviceLost;
-OnDeviceRegained;
+OnDeviceChanged
+OnDeviceLost
+OnDeviceRegained
+OnBindingRebind
+OnBindingRebindStart
+OnBindingRebindCancelled
 ```
 
 # Example
@@ -46,7 +55,7 @@ private void Update()
     Vector2 moveInputValue = PlayerInput.Instance.GetMoveInput();
 
     bool jumpValue = PlayerInput.Instance.GetJumpAction().IsPressed();
-    bool crouchValue = PlayerInput.Instance.GetCrouchAction().WasPressedThisFrame();
+    bool crouchValue = PlayerInput.Instance.GetCrouchAction().IsPressed();
     bool sprintValue = PlayerInput.Instance.GetSprintAction().IsPressed();
     bool aimingValue = PlayerInput.Instance.GetAimAction().IsPressed();
     bool fireValue = PlayerInput.Instance.GetFireAction().IsPressed();
@@ -55,7 +64,7 @@ private void Update()
     HandleLook(lookInputValue);
     HandleMove(moveInputValue, sprintValue);
     HandleJump(jumpValue);
-    HandleJump(crouchValue);
+    HandleCrouch(crouchValue);
 }
 
 ```
