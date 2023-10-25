@@ -38,7 +38,7 @@ public class InputSystemStarterPlayerController : MonoBehaviour
         Vector2 moveInputValue = PlayerInput.Instance.GetMoveInput();
 
         bool jumpValue = PlayerInput.Instance.GetJumpAction().IsPressed();
-        bool crouchValue = PlayerInput.Instance.GetCrouchAction().WasPressedThisFrame();
+        bool crouchValue = PlayerInput.Instance.GetCrouchAction().IsPressed();
         bool sprintValue = PlayerInput.Instance.GetSprintAction().IsPressed();
         bool aimingValue = PlayerInput.Instance.GetAimAction().IsPressed();
         bool fireValue = PlayerInput.Instance.GetFireAction().IsPressed();
@@ -47,6 +47,7 @@ public class InputSystemStarterPlayerController : MonoBehaviour
         HandleLook(lookInputValue);
         HandleMove(moveInputValue, sprintValue);
         HandleJump(jumpValue);
+        HandleCrouch(crouchValue);
     }
 
     private void HandleWeapon(bool aimingValue, bool fireValue)
@@ -98,5 +99,21 @@ public class InputSystemStarterPlayerController : MonoBehaviour
 
         cameraTransform.localEulerAngles = new Vector3(currentXRotation, 0, 0);
         transform.eulerAngles = new Vector3(0, currentYRotation, 0);
+    }
+
+    private void HandleCrouch(bool crouch)
+    {
+        if(crouch)
+        {
+            cc.center = new Vector3(0, 0.5f, 0);
+            cc.height = 1;
+            cameraTransform.localPosition = new Vector3(0, 0.9f, 0);
+        }
+        else
+        {
+            cc.center = new Vector3(0, 1, 0);
+            cc.height = 2;
+            cameraTransform.localPosition = new Vector3(0, 1.8f, 0);
+        }
     }
 }
