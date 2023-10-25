@@ -14,6 +14,9 @@ This asset simplifies input handling in your Unity projects. Leveraging the powe
 # Limitations
 Because it's a singleton and so it's a single instance, getting values for a local multiplayer game is not possible with the script.
 
+# How to use
+Just place the **PlayerInput** Prefab from the **Prefabs** directory to your scene and start using it!
+
 # Utility Methods
 ```csharp
 public DeviceType GetCurrentDeviceType();
