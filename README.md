@@ -31,6 +31,13 @@ public InputAction GetInteractAction()
 public InputAction GetInteractAlternativeAction()
 ```
 
+# Events
+```csharp
+OnDeviceChanged;
+OnDeviceLost;
+OnDeviceRegained;
+```
+
 # Example
 ```csharp
 private void Update()
