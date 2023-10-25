@@ -4,7 +4,8 @@ public class InputSystemStarterPlayerController : MonoBehaviour
 {
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private float cameraSensitivity = 2f;
-    [SerializeField] private float moveSensitivity = 5f;
+    [SerializeField] private float walkSensitivity = 5f;
+    [SerializeField] private float sprintSensitivity = 10f;
     [SerializeField] private float cameraClamp = 90f;
     [SerializeField] private float jumpForce = 5f;
 
@@ -44,7 +45,7 @@ public class InputSystemStarterPlayerController : MonoBehaviour
 
         HandleWeapon(aimingValue, fireValue);
         HandleLook(lookInputValue);
-        HandleMove(moveInputValue);
+        HandleMove(moveInputValue, sprintValue);
         HandleJump(jumpValue);
     }
 
@@ -61,7 +62,7 @@ public class InputSystemStarterPlayerController : MonoBehaviour
         }
     }
 
-    private void HandleMove(Vector2 moveInputValue)
+    private void HandleMove(Vector2 moveInputValue, bool isSprinting)
     {
         // Gravity
         if(cc.isGrounded)
@@ -75,9 +76,9 @@ public class InputSystemStarterPlayerController : MonoBehaviour
 
         //Movement
         Vector3 movement = transform.forward * moveInputValue.y + transform.right * moveInputValue.x;
-        moveVelocity.x = movement.x;
-        moveVelocity.z = movement.z;
-        cc.Move(moveVelocity * moveSensitivity * Time.deltaTime);
+        moveVelocity.x = movement.x * (!isSprinting ? walkSensitivity : sprintSensitivity);
+        moveVelocity.z = movement.z * (!isSprinting ? walkSensitivity : sprintSensitivity);
+        cc.Move(moveVelocity * Time.deltaTime);
     }
 
     private void HandleJump(bool jumping)
@@ -85,8 +86,7 @@ public class InputSystemStarterPlayerController : MonoBehaviour
         if(jumping && cc.isGrounded)
         {
             moveVelocity.y = jumpForce;
-            cc.Move(moveVelocity * moveSensitivity * Time.deltaTime);
-            Debug.Log(jumping);
+            cc.Move(moveVelocity * Time.deltaTime);
         }
     }
 
