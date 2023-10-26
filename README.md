@@ -15,7 +15,8 @@ This asset simplifies input handling in your Unity projects. Leveraging the powe
 Because it's a singleton and so it's a single instance, getting values for a local multiplayer game is not possible with the script.
 
 # How to use
-Just place the **PlayerInput** Prefab from the **Prefabs** directory to your scene and start using it!
+1. Install the **Input System** from the Package Manager.
+2. Just place the **PlayerInput** Prefab from the **Prefabs** directory to your scene and start using it!
 
 # Utility Methods
 ```csharp
